@@ -60,6 +60,12 @@ export default function Chatbot() {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
 
+    // Add an empty bot message that we'll update
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "bot", content: "" }
+    ]);
+
     try {
       console.log('Sending request to API...');
       const response = await axios.post("https://aiva-livid.vercel.app/api/chat", 
@@ -80,11 +86,21 @@ export default function Chatbot() {
         responseText = responseText.slice(0, -2).trim();
       }
 
-      // Add bot message
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "bot", content: responseText }
-      ]);
+      // Stream the response character by character
+      let currentText = "";
+      for (let i = 0; i < responseText.length; i++) {
+        currentText += responseText[i];
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages];
+          newMessages[newMessages.length - 1] = {
+            role: "bot",
+            content: currentText
+          };
+          return newMessages;
+        });
+        // Add a small delay between characters
+        await new Promise(resolve => setTimeout(resolve, 20));
+      }
 
     } catch (error) {
       console.error("Error fetching response:", error);
@@ -93,14 +109,14 @@ export default function Chatbot() {
         response: error.response,
         status: error.response?.status
       });
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages];
+        newMessages[newMessages.length - 1] = {
           role: "bot",
-          content:
-            "I apologize, but I'm having trouble connecting to the server. Please try again later.",
-        },
-      ]);
+          content: "I apologize, but I'm having trouble connecting to the server. Please try again later."
+        };
+        return newMessages;
+      });
 
     } finally {
       setBotTyping(false);
