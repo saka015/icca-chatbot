@@ -3,9 +3,6 @@ import axios from "axios";
 
 const useCheckServiceStatus = (onServiceLive) => {
   useEffect(() => {
-    let retryCount = 0;
-    let checkInterval;
-
     const checkStatus = async () => {
       try {
         console.log("Checking API status...");
@@ -25,29 +22,17 @@ const useCheckServiceStatus = (onServiceLive) => {
 
         if (response.data) {
           console.log("Service is live ✅");
-          clearInterval(checkInterval);
-          onServiceLive(true); // Notify component that service is live
+          onServiceLive(true);
         }
       } catch (error) {
-        retryCount++;
-        console.log(
-          `Service status check failed (attempt ${retryCount}):`,
-          error.message
-        );
-        onServiceLive(false); // Notify component that service is not live yet
+        console.log("Service status check failed:", error.message);
+        // Show interface even if service check fails
+        onServiceLive(true);
       }
     };
 
-    // Initial check
+    // Single check on component mount
     checkStatus();
-
-    // Continue checking every 5 seconds until successful
-    checkInterval = setInterval(checkStatus, 5000);
-
-    // Cleanup interval on component unmount
-    return () => {
-      clearInterval(checkInterval);
-    };
   }, [onServiceLive]);
 };
 
