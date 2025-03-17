@@ -2,6 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import useCheckServiceStatus from './hooks/useCheckServiceStatus';
 
+// Add this debounce utility function at the top of the file
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
 export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -13,6 +26,9 @@ export default function Chatbot() {
   const [typingDots, setTypingDots] = useState("");
   const [isServiceLive, setIsServiceLive] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+
+  // Add a new ref to track if we're currently processing a message
+  const isProcessingRef = useRef(false);
 
   useCheckServiceStatus((status) => {
     if (status) {
@@ -66,7 +82,8 @@ export default function Chatbot() {
   }, [botTyping]);
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isProcessingRef.current) return;
+    isProcessingRef.current = true;
     setLoading(true);
     setBotTyping(true);
 
@@ -78,7 +95,6 @@ export default function Chatbot() {
     setInput("");
 
     try {
-      // Format chat history from current messages state
       const chat_history = messages.map(msg => ({
         [msg.role === 'user' ? 'user' : 'assistant']: msg.content
       }));
@@ -97,17 +113,13 @@ export default function Chatbot() {
         }
       );
 
-      // console.log("API Response:", response);
-
       let responseText = response.data;
       if (typeof responseText === 'string' && responseText.endsWith("{}")) {
         responseText = responseText.slice(0, -2).trim();
       }
 
-      // Hide typing indicator once we start showing the response
       setBotTyping(false);
       
-      // Add the bot message and stream the response
       setMessages((prevMessages) => [...prevMessages, { role: "bot", content: "" }]);
       
       let currentText = "";
@@ -134,8 +146,19 @@ export default function Chatbot() {
     } finally {
       setLoading(false);
       setCurrentPrompt("");
+      isProcessingRef.current = false;
     }
   };
+
+  // Create a debounced version of sendMessage
+  const debouncedSendMessage = React.useCallback(
+    debounce(() => {
+      if (!isProcessingRef.current) {
+        sendMessage();
+      }
+    }, 1000),
+    [input, messages]
+  );
 
   function getCurrentRotation(element) {
   const style = window.getComputedStyle(element);
@@ -242,7 +265,7 @@ useEffect(() => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !isProcessingRef.current) {
               e.preventDefault();
               sendMessage();
             }

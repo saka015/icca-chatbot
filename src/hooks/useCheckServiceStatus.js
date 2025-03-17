@@ -1,9 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 
 const useCheckServiceStatus = (onServiceLive) => {
+  // Add a ref to track if service is already live
+  const isLiveRef = useRef(false);
+
   useEffect(() => {
+    let pollingInterval;
+    let isSubscribed = true;
+
     const checkStatus = async () => {
+      // Skip check if service is already live
+      if (isLiveRef.current) return;
+
       try {
         console.log("Checking API status...");
         const response = await axios.post(
@@ -20,19 +29,40 @@ const useCheckServiceStatus = (onServiceLive) => {
           }
         );
 
-        if (response.data) {
+        if (response.data && isSubscribed) {
           console.log("Service is live ✅");
+          isLiveRef.current = true; // Mark service as live
           onServiceLive(true);
+          // Clear the polling interval once service is live
+          if (pollingInterval) {
+            clearInterval(pollingInterval);
+          }
         }
       } catch (error) {
-        console.log("Service status check failed:", error.message);
-        // Show interface even if service check fails
-        onServiceLive(true);
+        // If it's a 500 error or any other error, keep showing loader
+        console.log("Waiting for service to be ready...");
+        if (isSubscribed) {
+          onServiceLive(false);
+        }
       }
     };
 
-    // Single check on component mount
-    checkStatus();
+    // Only start polling if service isn't live yet
+    if (!isLiveRef.current) {
+      // Initial check
+      checkStatus();
+
+      // Start polling every 10 seconds
+      pollingInterval = setInterval(checkStatus, 10000);
+    }
+
+    // Cleanup function
+    return () => {
+      isSubscribed = false;
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    };
   }, [onServiceLive]);
 };
 
