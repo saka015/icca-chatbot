@@ -975,3 +975,7 @@ form label{
   background: #fff;
   color: #a30f28;
 }
+.transcript-btn:active{
+  scale: .9;
+}
+

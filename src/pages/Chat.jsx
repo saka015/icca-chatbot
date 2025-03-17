@@ -6,8 +6,32 @@ import Chatbot from "../components/Chatbot";
 import { MdDownload } from "react-icons/md";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { IoIosLogOut } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 function Chat() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    try {
+      // Clear all localStorage items
+      localStorage.clear();
+      
+      // Show success message
+      toast.success("Logged out successfully!", {
+        duration: 2000,
+      });
+
+      // Navigate to login page after a brief delay
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Error during logout");
+    }
+  };
 
     const downloadTranscript = async () => {
         try {
@@ -45,6 +69,7 @@ function Chat() {
     <div className="App">
       <main className="main-content">
         <div className="header">
+          <button onClick={handleLogout} className="transcript-btn"> Logout <IoIosLogOut/> </button>
           <img src={IccaLogo} alt="ICCA Logo" className="icca-logo" />
           <h1 className="app-title">ICCA Culinary Guide</h1>
           <p className="app-subtitle">Your Culinary Career Assistant</p>
