@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import useCheckServiceStatus from '../hooks/useCheckServiceStatus';
 import useSaveTranscript from '../hooks/useSaveTranscript';
+import image1 from "/src/assets/1.avif";
+import image2 from "/src/assets/2.avif";
+import image3 from "/src/assets/3.avif";
+import image4 from "/src/assets/4.avif";
+import image5 from "/src/assets/5.avif";
+import image6 from "/src/assets/6.avif";
+
 
 // Add this debounce utility function at the top of the file
 const debounce = (func, wait) => {
@@ -27,11 +34,39 @@ export default function Chatbot() {
   const [typingDots, setTypingDots] = useState("");
   const [isServiceLive, setIsServiceLive] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
 
   // Add a new ref to track if we're currently processing a message
   const isProcessingRef = useRef(false);
 
   const saveTranscript = useSaveTranscript();
+
+  const loaderData = [
+    {
+      text: "ICCA Dubai is a world-class culinary training center established in 2005, offering internationally recognized programs accredited by City & Guilds, London.",
+      image: image1
+    },
+    {
+      text: "Recognized among the \"Top 10 Culinary Institutes in the World,\" ICCA Dubai provides an award-winning learning experience to aspiring chefs, artisans, and entrepreneurs globally.",
+      image: image2
+    },
+    {
+      text: "As the first school of its kind in the Middle East, ICCA Dubai has over 20 years of continued excellence in culinary education.",
+      image: image3
+    },
+    {
+      text: "ICCA Dubai offers 100% internship and work placement, with 86% of UAE hospitality brands serviced, and has successfully trained over 12,000 students.",
+      image: image4
+    },
+    {
+      text: "The institute provides turnkey culinary career programs, equipping students with the necessary skills to excel in the culinary industry.",
+      image: image5
+    },
+    {
+      text: "ICCA Dubai's state-of-the-art facilities and award-winning training kitchens offer professionals the opportunity to enhance their skills through Continuous Professional Development (CPD) programs.",
+      image: image6
+    }
+  ];
 
   useCheckServiceStatus((status) => {
     if (status) {
@@ -83,6 +118,18 @@ export default function Chatbot() {
       setTypingDots("");
     }
   }, [botTyping]);
+
+  useEffect(() => {
+    if (showLoader) {
+      const timer = setTimeout(() => {
+        // Reset to 0 if we reach the end, otherwise increment
+        setCurrentLoaderIndex(prev => 
+          prev >= loaderData.length - 1 ? 0 : prev + 1
+        );
+      }, 3000); // Change slide every 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [currentLoaderIndex, showLoader, loaderData.length]);
 
   const sendMessage = async () => {
     if (!input.trim() || isProcessingRef.current) return;
@@ -184,46 +231,41 @@ export default function Chatbot() {
   return Math.round(Math.atan2(b, a) * (180 / Math.PI));
 }
 
-const startProgressBar = () => {
-  const progressBar = document.querySelector('.progress');
-  let width = 0;
-  let speed = 50; // Initial speed (lower number = faster)
+useEffect(() => {
+  if (showLoader) {
+    const progressBar = document.querySelector('.progress');
+    let width = 0;
+    let speed = 50; // Initial speed
 
-  const interval = setInterval(() => {
-    if (width >= 90) {
-      // Slow down significantly at 90%
-      speed = 500;
-      if (!isServiceLive) {
-        // Only increment occasionally while waiting for service
-        if (Math.random() < 0.1) { // 10% chance to increment
-          width = Math.min(width + 0.5, 95);
+    const interval = setInterval(() => {
+      if (width >= 90) {
+        speed = 500;
+        if (!isServiceLive) {
+          // Slowly increment while waiting for service
+          if (Math.random() < 0.1) {
+            width = Math.min(width + 0.5, 95);
+          }
+        } else {
+          // Complete the progress when service is live
+          width = 100;
+          clearInterval(interval);
         }
       } else {
-        // Complete the progress bar when service is live
-        width = 100;
+        width += 0.5;
+      }
+      
+      if (progressBar) {
+        progressBar.style.width = `${width}%`;
+      }
+
+      if (width >= 100) {
         clearInterval(interval);
       }
-    } else {
-      // Normal progression up to 90%
-      width += 0.5;
-    }
-    
-    if (progressBar) {
-      progressBar.style.width = `${width}%`;
-    }
+    }, speed);
 
-    if (width >= 100) {
-      clearInterval(interval);
-    }
-  }, speed);
-
-  return interval;
-};
-
-useEffect(() => {
-  const intervalId = startProgressBar();
-  return () => clearInterval(intervalId);
-}, [isServiceLive]); // Depend on isServiceLive to complete the bar when service is ready
+    return () => clearInterval(interval);
+  }
+}, [showLoader, isServiceLive]);
 
   return (
     <div className="chatbot-container">
@@ -231,12 +273,27 @@ useEffect(() => {
         {showLoader ? (
           <div className="loader-container">
             <div className="loader">
-              <div className="fries">🍟</div>
-              <div className="drink">🥤</div>
-              <div className="progress-bar">
-                <div className="progress"></div>
+              <div className="loader-content">
+                {loaderData.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`loader-item ${index === currentLoaderIndex ? 'active' : ''}`}
+                  >
+                    <div className="loader-image-container">
+                      <img src={item.image} alt={`Loader image ${index + 1}`} />
+                      <p className="loader-text">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="loading-text">Connecting to server!</div>
+              <div className="loading-status">
+                <div className="progress-bar">
+                  <div className="progress"></div>
+                </div>
+                <p className="status-text">
+                  {isServiceLive ? 'Connected!' : 'Connecting to server...'}
+                </p>
+              </div>
             </div>
             <div className="success-check">
               <div className="check-circle">

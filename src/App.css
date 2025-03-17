@@ -508,25 +508,101 @@ div#wave {
 
 
 .loader-container {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -30%);
-  width: 300px;
-  height: 300px;
+  position: relative;
+  /* overflow-y: hidden; */
+  width: 100%;
+  height:67%;
+  margin-top: 45px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center; /* Center everything vertically */
+  padding: 20px;
+  gap: 20px; /* Reduced gap */
 }
 
 .loader {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Reduced gap */
+}
+
+.loader-content {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Reduced height */
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 0;
+}
+
+.loader-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.loader-item.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loader-image-container {
   position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: float 2s ease-in-out infinite;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.loader-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7); /* Make image dimmer */
+  transition: transform 0.5s ease;
+}
+
+.loader-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+/* Add smooth transition for image zoom effect */
+.loader-item.active .loader-image-container img {
+  transform: scale(1.05);
+}
+
+/* Ensure the progress bar stays at the bottom */
+.progress-bar {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  max-width: 250px; /* Slightly smaller width */
+  height: 4px; /* Slightly smaller height */
+  margin: 0 auto;
 }
 
 .burger {
@@ -555,20 +631,6 @@ div#wave {
   top: 40%;
   animation: drinkBounce 2s ease-in-out infinite;
   filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
-}
-
-.progress-bar {
-  position: absolute;
-  bottom: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
 }
 
 .progress {
@@ -977,5 +1039,66 @@ form label{
 }
 .transcript-btn:active{
   scale: .9;
+}
+
+.loading-status {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px; /* Reduced gap */
+  margin-top: 10px; /* Reduced margin */
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 250px; /* Slightly smaller width */
+  height: 4px; /* Slightly smaller height */
+  margin: 0 auto;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #c41230, #ff4d4d);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(196, 18, 48, 0.3);
+}
+
+.status-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 2px 0;
+  margin-bottom: 7px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Update success check positioning */
+.success-check {
+  margin-top: 15px; /* Reduced margin */
+}
+
+/* Add animation for status text */
+.status-text {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Ensure chat messages container takes remaining height */
+.chat-messages {
+  height: calc(100% - 60px); /* Adjust based on input area height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
