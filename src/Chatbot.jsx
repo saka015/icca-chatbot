@@ -133,7 +133,7 @@ export default function Chatbot() {
           };
           return newMessages;
         });
-        await new Promise(resolve => setTimeout(resolve, 20));
+        await new Promise(resolve => setTimeout(resolve, 2));
       }
 
     } catch (error) {
