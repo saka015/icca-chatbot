@@ -329,7 +329,7 @@ useEffect(() => {
         )}
       </div>
 
-      <div className="chat-input-area">
+      <div className="chat-input-area" style={{ display: isServiceLive ? 'flex' : 'none' }}>
         <input
           type="text"
           value={input}
