@@ -1,23 +1,43 @@
-import React from "react";
-import Chatbot from "./Chatbot";
-import "./App.css";
-import IccaLogo from "/logo.avif";
-import { Toaster } from "react-hot-toast";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Auth from './pages/Auth';
+import Chat from './pages/Chat';
+import { Toaster } from 'react-hot-toast';
 
-function App() {
+
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem('userToken');
+  
+  if (!token) {
+    // Redirect to login if there's no token
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+const App = () => {
   return (
-    <div className="App">
+    <BrowserRouter>
       <Toaster position="top-center" />
-      <main className="main-content">
-        <div className="header">
-          <img src={IccaLogo} alt="ICCA Logo" className="icca-logo" />
-          <h1 className="app-title">ICCA Culinary Guide</h1>
-          <p className="app-subtitle">Your Culinary Career Assistant</p>
-        </div>
-        <Chatbot />
-      </main>
-    </div>
+      <div className="App">
+        <Routes>
+          {/* Public route - Login page */}
+          <Route path="/" element={<Auth />} />
+          
+          {/* Protected route - Chat page */}
+          <Route 
+            path="/chat" 
+            element={
+              <PrivateRoute>
+                <Chat />
+              </PrivateRoute>
+            } 
+          />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

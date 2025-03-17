@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
-import useCheckServiceStatus from './hooks/useCheckServiceStatus';
+import useCheckServiceStatus from '../hooks/useCheckServiceStatus';
+import useSaveTranscript from '../hooks/useSaveTranscript';
 
 // Add this debounce utility function at the top of the file
 const debounce = (func, wait) => {
@@ -29,6 +30,8 @@ export default function Chatbot() {
 
   // Add a new ref to track if we're currently processing a message
   const isProcessingRef = useRef(false);
+
+  const saveTranscript = useSaveTranscript();
 
   useCheckServiceStatus((status) => {
     if (status) {
@@ -90,7 +93,10 @@ export default function Chatbot() {
     const promptToSend = showPrompt ? `user said ${input}` : input;
     setCurrentPrompt(promptToSend);
 
+    // Create user message
     const userMessage = { role: "user", content: input };
+    
+    // Update messages with user input
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
 
@@ -98,6 +104,8 @@ export default function Chatbot() {
       const chat_history = messages.map(msg => ({
         [msg.role === 'user' ? 'user' : 'assistant']: msg.content
       }));
+
+      const token = localStorage.getItem('userToken');
 
       console.log('Sending request to API...');
       const response = await axios.post("https://aiva-livid.vercel.app/api/chat",
@@ -109,6 +117,7 @@ export default function Chatbot() {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
+            "Authorization": `Bearer ${token}`
           }
         }
       );
@@ -120,21 +129,25 @@ export default function Chatbot() {
 
       setBotTyping(false);
       
-      setMessages((prevMessages) => [...prevMessages, { role: "bot", content: "" }]);
-      
-      let currentText = "";
-      for (let i = 0; i < responseText.length; i++) {
-        currentText += responseText[i];
-        setMessages((prevMessages) => {
-          const newMessages = [...prevMessages];
-          newMessages[newMessages.length - 1] = {
-            role: "bot",
-            content: currentText
-          };
-          return newMessages;
-        });
-        await new Promise(resolve => setTimeout(resolve, 2));
-      }
+      // Update messages with bot response and save transcript
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages, {
+          role: "bot",
+          content: responseText
+        }];
+        
+        // Create transcript with latest user query and bot response
+        const chatHistoryForTranscript = [
+          ...chat_history,
+          { user: input },
+          { assistant: responseText }
+        ];
+
+        // Save the transcript
+        saveTranscript(chatHistoryForTranscript);
+        
+        return newMessages;
+      });
 
     } catch (error) {
       console.error("Error fetching response:", error);
