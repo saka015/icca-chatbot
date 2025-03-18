@@ -17,7 +17,7 @@ const StartConversation = () => {
           </p>
         </div>
       </div>
-      <button className="bg-[#c41230] flex justify-between px-12 items-center gap-2 w-full rounded-2xl font-normal text-base  text-white py-2 ">
+      <button className="bg-[#c41230] flex justify-between px-12 items-center gap-2 w-full rounded-2xl font-normal text-base  text-white py-2 cursor-pointer border hover:border-[#c41230] hover:bg-white hover:text-[#c41230]">
         {" "}
         Send Us a Message <RiSendPlaneLine className="rotate-45" />
       </button>
