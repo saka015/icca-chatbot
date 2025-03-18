@@ -20,7 +20,7 @@ import Logo from "../assets/Logo";
 import StartConversation from "../components/StartConversation";
 import { BsChatSquare } from "react-icons/bs";
 
-function Chat() {
+function Chat({ setShowChat }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -76,32 +76,19 @@ function Chat() {
   };
 
   return (
-    // <div className="App">
-    //   <main className="main-content">
-    //     <div className="header">
-    //       <button onClick={handleLogout} className="transcript-btn"> Logout <IoIosLogOut/> </button>
-    //       <img src={IccaLogo} alt="ICCA Logo" className="icca-logo" />
-    //       <h1 className="app-title">ICCA Culinary Guide</h1>
-    //       <p className="app-subtitle">Your Culinary Career Assistant</p>
-    //       <button onClick={downloadTranscript} className="transcript-btn"> Transcript <MdDownload/> </button>
-    //     </div>
-    //     <Chatbot />
-    //   </main>
-    // </div>
-
-    <div className="bg-[#c41230] bottom-25 left-10 absolute h-[500px] w-88 rounded-4xl overflow-hidden p- flex flex-col">
-      {/* Scrollable content area that includes everything */}
+    <div className="bg-[#c41230] bottom-25 left-10 h-[500px] w-88 rounded-4xl overflow-hidden p- flex flex-col">
       <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-20 rounded-4xl scrollbar-hide">
-        {/* Red header section */}
         <div className="flex flex-col items-center justify-center w-full pt-2 sticky top-0 z-10">
-          <FiMinus className="cursor-pointer absolute top-10 right-10 text-white text-xl" />
+          <FiMinus
+            onClick={() => setShowChat(false)}
+            className="cursor-pointer absolute top-10 right-10 text-white text-xl"
+          />
           <Logo />
           <p className="text-[10px] -mt-1 text-white text-left max-w-[120px]">
             INTERNATIONAL CENTER FOR CULINARY ARTS DUBAI
           </p>
         </div>
 
-        {/* White content section with negative margin to create overlap */}
         <div className="p-2 bg-white rounded-4xl overflow-hidden flex flex-col items-center justify-center mt-2 -mx-1 relative z-20">
           <p className="text-black text-center text-base font-sf">
             Chat with AIVA
@@ -156,7 +143,6 @@ function Chat() {
         </div>
       </div>
 
-      {/* Fixed footer */}
       <footer className="w-full bottom-0 left-0 right-0 absolute bg-white shadow-md rounded-4xl border-t-0 rounded-t-none p-4 z-30 border-[4px] border-[#c41230]">
         <div className="flex w-full justify-around rounded-2xl shadow-xl p-2">
           <div className="text-[#c41230] flex flex-col items-center justify-center">
@@ -169,8 +155,6 @@ function Chat() {
           </div>
         </div>
       </footer>
-
-      {/* <Chatbot /> */}
     </div>
   );
 }

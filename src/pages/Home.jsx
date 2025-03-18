@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import BotTrigger from "../components/BotTrigger";
 // import Chatbot from '../components/Chatbot'
 import Chat from "./Chat";
+
 const Home = () => {
-  const [showChat, setShowChat] = useState(true);
+  const [showChat, setShowChat] = useState(false);
 
   return (
     <div className="z-10 h-full w-full">
       <BotTrigger showChat={showChat} setShowChat={setShowChat} />
-      {showChat && <Chat />}
+      <div
+        className={`fixed bottom-10 left-10 transition-all duration-500 ease-in-out ${
+          showChat
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-full pointer-events-none"
+        }`}
+      >
+        <Chat setShowChat={setShowChat} />
+      </div>
     </div>
   );
 };
