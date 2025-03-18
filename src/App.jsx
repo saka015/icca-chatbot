@@ -4,6 +4,7 @@ import Auth from './pages/Auth';
 import Chat from './pages/Chat';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
+import Home from './pages/Home';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('userToken');
@@ -16,7 +17,7 @@ const PrivateRoute = ({ children }) => {
     });
     
     // Redirect to login if there's no token
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -49,7 +50,7 @@ const App = () => {
         <Routes>
           {/* Public route - Login page */}
           <Route 
-            path="/" 
+            path="/login" 
             element={
               <PublicRoute>
                 <Auth />
@@ -57,6 +58,16 @@ const App = () => {
             } 
           />
           
+          {/* Protected route - Home page */}
+          <Route 
+            path="/" 
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            } 
+          />
+
           {/* Protected route - Chat page */}
           <Route 
             path="/chat" 

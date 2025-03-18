@@ -45,10 +45,10 @@ const useCheckServiceStatus = (onServiceLive) => {
       }
     };
 
-    if (!isLiveRef.current) {
-      checkStatus();
-      pollingInterval = setInterval(checkStatus, 10000);
-    }
+    // if (!isLiveRef.current) {
+    //   checkStatus();
+    //   pollingInterval = setInterval(checkStatus, 10000000000);
+    // }
 
     return () => {
       isSubscribed = false;
