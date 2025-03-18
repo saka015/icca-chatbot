@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/src/assets/fonts/SF-Pro-Display-Regular.otf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/src/assets/fonts/SF-Pro-Display-Bold.otf') format('opentype');
+  font-weight: 700;
+}
+
+body{
+    font-family: 'SF Pro Display', sans-serif;
+}

@@ -36,7 +36,7 @@ const Auth = () => {
       setError('');
       
       // Redirect to chat or home page
-      navigate('/chat'); // or wherever you want to redirect after login
+      navigate('/'); // or wherever you want to redirect after login
       
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during login');
