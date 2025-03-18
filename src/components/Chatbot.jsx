@@ -23,7 +23,15 @@ const debounce = (func, wait) => {
 };
 
 export default function Chatbot() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const savedChats = localStorage.getItem("chats");
+      return savedChats ? JSON.parse(savedChats) : [];
+    } catch (error) {
+      console.error("Error loading chat history from localStorage:", error);
+      return [];
+    }
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
@@ -34,6 +42,7 @@ export default function Chatbot() {
   const [isServiceLive, setIsServiceLive] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+  const [responseStarted, setResponseStarted] = useState(false);
 
   // Add a new ref to track if we're currently processing a message
   const isProcessingRef = useRef(false);
@@ -92,9 +101,11 @@ export default function Chatbot() {
 
   useEffect(() => {
     try {
-      localStorage.setItem("chats", JSON.stringify(messages));
+      if (messages.length > 0) {
+        localStorage.setItem("chats", JSON.stringify(messages));
+      }
     } catch (error) {
-      console.error("Error saving chat history:", error);
+      console.error("Error saving chat history to localStorage:", error);
     }
   }, [messages]);
 
@@ -137,6 +148,7 @@ export default function Chatbot() {
     isProcessingRef.current = true;
     setLoading(true);
     setBotTyping(true);
+    setResponseStarted(false); // Reset response started state
 
     const promptToSend = showPrompt ? `user said ${input}` : input;
     setCurrentPrompt(promptToSend);
@@ -157,11 +169,8 @@ export default function Chatbot() {
 
       console.log("Sending request to API...");
 
-      // Add empty bot message to start with
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "bot", content: "" },
-      ]);
+      // Don't add empty bot message until we get a response
+      // We'll add it when we get the first character
 
       const response = await axios.post(
         "https://aiva-livid.vercel.app/api/chat",
@@ -194,9 +203,19 @@ export default function Chatbot() {
       let displayedText = "";
       const characters = cleanedResponse.split("");
 
+      // Add the bot message when we get the first character
+      setResponseStarted(true);
+      setBotTyping(false); // Hide typing indicator once response starts
+
+      // Add empty bot message now that we have a response
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "bot", content: "" },
+      ]);
+
       // Update the bot message character by character
       for (let i = 0; i < characters.length; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 20)); // 20ms typing speed
+        await new Promise((resolve) => setTimeout(resolve, 2));
         displayedText += characters[i];
 
         setMessages((prevMessages) => {
@@ -210,8 +229,6 @@ export default function Chatbot() {
         });
       }
 
-      setBotTyping(false);
-
       // Create transcript with latest user query and bot response
       const chatHistoryForTranscript = [
         ...chat_history,
@@ -224,6 +241,7 @@ export default function Chatbot() {
     } catch (error) {
       console.error("Error fetching response:", error);
       setBotTyping(false);
+      setResponseStarted(true); // Show error message
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -348,7 +366,7 @@ export default function Chatbot() {
                 ))}
               </div>
             ))}
-            {botTyping && (
+            {botTyping && !responseStarted && (
               <div
                 className={`typing-indicator ${
                   messages.length === 0 ? "typing-indicator-first" : ""
