@@ -8,16 +8,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { IoIosLogOut } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { LuSend } from "react-icons/lu";
 
 function Chat() {
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
     try {
       // Clear all localStorage items
       localStorage.clear();
-      
+
       // Show success message
       toast.success("Logged out successfully!", {
         duration: 2000,
@@ -33,47 +33,78 @@ function Chat() {
     }
   };
 
-    const downloadTranscript = async () => {
-        try {
-            const response = await axios.post(
-                "https://aiva-livid.vercel.app/api/analytics/export/csv/f2411dd2-3167-42d6-9739-7582248e5d3e",
-                {},
-                { responseType: 'blob' }
-            );
+  const downloadTranscript = async () => {
+    try {
+      const response = await axios.post(
+        "https://aiva-livid.vercel.app/api/analytics/export/csv/f2411dd2-3167-42d6-9739-7582248e5d3e",
+        {},
+        { responseType: "blob" }
+      );
 
-            // Create a blob from the response data
-            const blob = new Blob([response.data], { type: 'text/csv' });
-            
-            // Create a download link
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'chat-transcript.csv';
-            
-            // Trigger download
-            document.body.appendChild(link);
-            link.click();
-            
-            // Cleanup
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            
-            toast.success('Transcript downloaded successfully');
-        } catch (error) {
-            console.error('Error downloading transcript:', error);
-            toast.error('Failed to download transcript');
+      // Create a blob from the response data
+      const blob = new Blob([response.data], { type: "text/csv" });
+
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "chat-transcript.csv";
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Transcript downloaded successfully");
+    } catch (error) {
+      console.error("Error downloading transcript:", error);
+      toast.error("Failed to download transcript");
+    }
+  };
+
+  const sendTranscript = async () => {
+    try {
+      const token = localStorage.getItem("userToken");
+
+      const response = await axios.post(
+        "https://aiva-livid.vercel.app/api/mail/transcript",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    };
+      );
+
+      toast.success("Transcript sent to email successfully");
+    } catch (error) {
+      console.error("Error sending transcript:", error);
+      toast.error("Failed to send transcript to email");
+    }
+  };
 
   return (
     <div className="App">
       <main className="main-content">
         <div className="header">
-          <button onClick={handleLogout} className="transcript-btn"> Logout <IoIosLogOut/> </button>
+          <button onClick={handleLogout} className="transcript-btn">
+            {" "}
+            Logout <IoIosLogOut />{" "}
+          </button>
           <img src={IccaLogo} alt="ICCA Logo" className="icca-logo" />
           <h1 className="app-title">ICCA Culinary Guide</h1>
           <p className="app-subtitle">Your Culinary Career Assistant</p>
-          <button onClick={downloadTranscript} className="transcript-btn"> Transcript <MdDownload/> </button>
+          <button onClick={downloadTranscript} className="transcript-btn">
+            {" "}
+            Transcript <MdDownload />{" "}
+          </button>
+          <button onClick={sendTranscript} className="transcript-btn">
+            {" "}
+            Send Transcript to Email <LuSend />{" "}
+          </button>
         </div>
         <Chatbot />
       </main>
