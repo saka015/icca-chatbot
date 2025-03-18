@@ -156,6 +156,13 @@ export default function Chatbot() {
       const token = localStorage.getItem("userToken");
 
       console.log("Sending request to API...");
+
+      // Add empty bot message to start with
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "bot", content: "" },
+      ]);
+
       const response = await axios.post(
         "https://aiva-livid.vercel.app/api/chat",
         {
@@ -176,30 +183,44 @@ export default function Chatbot() {
         responseText = responseText.slice(0, -2).trim();
       }
 
+      // Check if the response starts with "User:" or similar patterns
+      // and remove the user's question from the response
+      const cleanedResponse = responseText.replace(
+        /^(User|Human|Q):.*?\n\n?(Assistant|A|Bot)?:?\s*/is,
+        ""
+      );
+
+      // Simulate typing effect for the response
+      let displayedText = "";
+      const characters = cleanedResponse.split("");
+
+      // Update the bot message character by character
+      for (let i = 0; i < characters.length; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 20)); // 20ms typing speed
+        displayedText += characters[i];
+
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages];
+          // Update the last message (which is the bot's response)
+          newMessages[newMessages.length - 1] = {
+            role: "bot",
+            content: displayedText,
+          };
+          return newMessages;
+        });
+      }
+
       setBotTyping(false);
 
-      // Update messages with bot response and save transcript
-      setMessages((prevMessages) => {
-        const newMessages = [
-          ...prevMessages,
-          {
-            role: "bot",
-            content: responseText,
-          },
-        ];
+      // Create transcript with latest user query and bot response
+      const chatHistoryForTranscript = [
+        ...chat_history,
+        { user: input },
+        { assistant: cleanedResponse },
+      ];
 
-        // Create transcript with latest user query and bot response
-        const chatHistoryForTranscript = [
-          ...chat_history,
-          { user: input },
-          { assistant: responseText },
-        ];
-
-        // Save the transcript
-        saveTranscript(chatHistoryForTranscript);
-
-        return newMessages;
-      });
+      // Save the transcript
+      saveTranscript(chatHistoryForTranscript);
     } catch (error) {
       console.error("Error fetching response:", error);
       setBotTyping(false);
