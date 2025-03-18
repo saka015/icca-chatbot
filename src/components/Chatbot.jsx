@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from 'axios';
-import useCheckServiceStatus from '../hooks/useCheckServiceStatus';
-import useSaveTranscript from '../hooks/useSaveTranscript';
+import axios from "axios";
+import useCheckServiceStatus from "../hooks/useCheckServiceStatus";
+import useSaveTranscript from "../hooks/useSaveTranscript";
 import image1 from "/src/assets/1.avif";
 import image2 from "/src/assets/2.avif";
 import image3 from "/src/assets/3.avif";
 import image4 from "/src/assets/4.avif";
 import image5 from "/src/assets/5.avif";
 import image6 from "/src/assets/6.avif";
-
 
 // Add this debounce utility function at the top of the file
 const debounce = (func, wait) => {
@@ -43,51 +42,53 @@ export default function Chatbot() {
 
   const loaderData = [
     {
-      text: "ICCA Dubai is a world-class culinary training center established in 2005, offering internationally recognized programs accredited by City & Guilds, London.",
-      image: image1
+      text:
+        "ICCA Dubai is a world-class culinary training center established in 2005, offering internationally recognized programs accredited by City & Guilds, London.",
+      image: image1,
     },
     {
-      text: "Recognized among the \"Top 10 Culinary Institutes in the World,\" ICCA Dubai provides an award-winning learning experience to aspiring chefs, artisans, and entrepreneurs globally.",
-      image: image2
+      text:
+        'Recognized among the "Top 10 Culinary Institutes in the World," ICCA Dubai provides an award-winning learning experience to aspiring chefs, artisans, and entrepreneurs globally.',
+      image: image2,
     },
     {
-      text: "As the first school of its kind in the Middle East, ICCA Dubai has over 20 years of continued excellence in culinary education.",
-      image: image3
+      text:
+        "As the first school of its kind in the Middle East, ICCA Dubai has over 20 years of continued excellence in culinary education.",
+      image: image3,
     },
     {
-      text: "ICCA Dubai offers 100% internship and work placement, with 86% of UAE hospitality brands serviced, and has successfully trained over 12,000 students.",
-      image: image4
+      text:
+        "ICCA Dubai offers 100% internship and work placement, with 86% of UAE hospitality brands serviced, and has successfully trained over 12,000 students.",
+      image: image4,
     },
     {
-      text: "The institute provides turnkey culinary career programs, equipping students with the necessary skills to excel in the culinary industry.",
-      image: image5
+      text:
+        "The institute provides turnkey culinary career programs, equipping students with the necessary skills to excel in the culinary industry.",
+      image: image5,
     },
     {
-      text: "ICCA Dubai's state-of-the-art facilities and award-winning training kitchens offer professionals the opportunity to enhance their skills through Continuous Professional Development (CPD) programs.",
-      image: image6
-    }
+      text:
+        "ICCA Dubai's state-of-the-art facilities and award-winning training kitchens offer professionals the opportunity to enhance their skills through Continuous Professional Development (CPD) programs.",
+      image: image6,
+    },
   ];
 
-  useCheckServiceStatus((status) => {
+  const isServiceLiveFromHook = useCheckServiceStatus((status) => {
+    console.log("Service status callback received:", status);
     if (status) {
+      console.log("Setting service as live and hiding loader");
       setIsServiceLive(true);
-      // Start the completion animation
-      const loaderContainer = document.querySelector('.loader-container');
-      if (loaderContainer) {
-        loaderContainer.classList.add('show-success');
-        setTimeout(() => {
-          document.querySelector('.success-check').style.opacity = '1';
-        }, 500);
-        
-        setTimeout(() => {
-          loaderContainer.style.opacity = '0';
-          setTimeout(() => {
-            setShowLoader(false);
-          }, 500);
-        }, 4000);
-      }
+      setShowLoader(false);
     }
   });
+
+  useEffect(() => {
+    if (isServiceLiveFromHook) {
+      console.log("Service is live from hook return value");
+      setIsServiceLive(true);
+      setShowLoader(false);
+    }
+  }, [isServiceLiveFromHook]);
 
   useEffect(() => {
     try {
@@ -123,7 +124,7 @@ export default function Chatbot() {
     if (showLoader) {
       const timer = setTimeout(() => {
         // Reset to 0 if we reach the end, otherwise increment
-        setCurrentLoaderIndex(prev => 
+        setCurrentLoaderIndex((prev) =>
           prev >= loaderData.length - 1 ? 0 : prev + 1
         );
       }, 3000); // Change slide every 3 seconds
@@ -142,67 +143,74 @@ export default function Chatbot() {
 
     // Create user message
     const userMessage = { role: "user", content: input };
-    
+
     // Update messages with user input
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
 
     try {
-      const chat_history = messages.map(msg => ({
-        [msg.role === 'user' ? 'user' : 'assistant']: msg.content
+      const chat_history = messages.map((msg) => ({
+        [msg.role === "user" ? "user" : "assistant"]: msg.content,
       }));
 
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem("userToken");
 
-      console.log('Sending request to API...');
-      const response = await axios.post("https://aiva-livid.vercel.app/api/chat",
-        { 
+      console.log("Sending request to API...");
+      const response = await axios.post(
+        "https://aiva-livid.vercel.app/api/chat",
+        {
           prompt: promptToSend,
-          chat_history: chat_history 
+          chat_history: chat_history,
         },
         {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       let responseText = response.data;
-      if (typeof responseText === 'string' && responseText.endsWith("{}")) {
+      if (typeof responseText === "string" && responseText.endsWith("{}")) {
         responseText = responseText.slice(0, -2).trim();
       }
 
       setBotTyping(false);
-      
+
       // Update messages with bot response and save transcript
       setMessages((prevMessages) => {
-        const newMessages = [...prevMessages, {
-          role: "bot",
-          content: responseText
-        }];
-        
+        const newMessages = [
+          ...prevMessages,
+          {
+            role: "bot",
+            content: responseText,
+          },
+        ];
+
         // Create transcript with latest user query and bot response
         const chatHistoryForTranscript = [
           ...chat_history,
           { user: input },
-          { assistant: responseText }
+          { assistant: responseText },
         ];
 
         // Save the transcript
         saveTranscript(chatHistoryForTranscript);
-        
+
         return newMessages;
       });
-
     } catch (error) {
       console.error("Error fetching response:", error);
       setBotTyping(false);
-      setMessages((prevMessages) => [...prevMessages, {
-        role: "bot",
-        content: "I apologize, but I'm having trouble connecting to the server. Please try again later."
-      }]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          role: "bot",
+          content:
+            "I apologize, but I'm having trouble connecting to the server. Please try again later.",
+        },
+      ]);
     } finally {
       setLoading(false);
       setCurrentPrompt("");
@@ -221,51 +229,51 @@ export default function Chatbot() {
   );
 
   function getCurrentRotation(element) {
-  const style = window.getComputedStyle(element);
-  const matrix = style.transform;
+    const style = window.getComputedStyle(element);
+    const matrix = style.transform;
 
-  if (matrix === 'none') return 0;
-  const values = matrix.split('(')[1].split(')')[0].split(',');
-  const a = values[0];
-  const b = values[1];
-  return Math.round(Math.atan2(b, a) * (180 / Math.PI));
-}
+    if (matrix === "none") return 0;
+    const values = matrix.split("(")[1].split(")")[0].split(",");
+    const a = values[0];
+    const b = values[1];
+    return Math.round(Math.atan2(b, a) * (180 / Math.PI));
+  }
 
-useEffect(() => {
-  if (showLoader) {
-    const progressBar = document.querySelector('.progress');
-    let width = 0;
-    let speed = 50; // Initial speed
+  useEffect(() => {
+    if (showLoader) {
+      const progressBar = document.querySelector(".progress");
+      let width = 0;
+      let speed = 50; // Initial speed
 
-    const interval = setInterval(() => {
-      if (width >= 90) {
-        speed = 500;
-        if (!isServiceLive) {
-          // Slowly increment while waiting for service
-          if (Math.random() < 0.1) {
-            width = Math.min(width + 0.5, 95);
+      const interval = setInterval(() => {
+        if (width >= 90) {
+          speed = 500;
+          if (!isServiceLive) {
+            // Slowly increment while waiting for service
+            if (Math.random() < 0.1) {
+              width = Math.min(width + 0.5, 95);
+            }
+          } else {
+            // Complete the progress when service is live
+            width = 100;
+            clearInterval(interval);
           }
         } else {
-          // Complete the progress when service is live
-          width = 100;
+          width += 0.5;
+        }
+
+        if (progressBar) {
+          progressBar.style.width = `${width}%`;
+        }
+
+        if (width >= 100) {
           clearInterval(interval);
         }
-      } else {
-        width += 0.5;
-      }
-      
-      if (progressBar) {
-        progressBar.style.width = `${width}%`;
-      }
+      }, speed);
 
-      if (width >= 100) {
-        clearInterval(interval);
-      }
-    }, speed);
-
-    return () => clearInterval(interval);
-  }
-}, [showLoader, isServiceLive]);
+      return () => clearInterval(interval);
+    }
+  }, [showLoader, isServiceLive]);
 
   return (
     <div className="chatbot-container">
@@ -277,7 +285,9 @@ useEffect(() => {
                 {loaderData.map((item, index) => (
                   <div
                     key={index}
-                    className={`loader-item ${index === currentLoaderIndex ? 'active' : ''}`}
+                    className={`loader-item ${
+                      index === currentLoaderIndex ? "active" : ""
+                    }`}
                   >
                     <div className="loader-image-container">
                       <img src={item.image} alt={`Loader image ${index + 1}`} />
@@ -291,7 +301,7 @@ useEffect(() => {
                   <div className="progress"></div>
                 </div>
                 <p className="status-text">
-                  {isServiceLive ? 'Connected!' : 'Connecting to server...'}
+                  {isServiceLive ? "Connected!" : "Connecting to server..."}
                 </p>
               </div>
             </div>
@@ -318,7 +328,11 @@ useEffect(() => {
               </div>
             ))}
             {botTyping && (
-              <div className={`typing-indicator ${messages.length === 0 ? 'typing-indicator-first' : ''}`}>
+              <div
+                className={`typing-indicator ${
+                  messages.length === 0 ? "typing-indicator-first" : ""
+                }`}
+              >
                 <span className="dot"></span>
                 <span className="dot"></span>
                 <span className="dot"></span>
@@ -329,7 +343,10 @@ useEffect(() => {
         )}
       </div>
 
-      <div className="chat-input-area" style={{ display: isServiceLive ? 'flex' : 'none' }}>
+      <div
+        className="chat-input-area"
+        style={{ display: isServiceLive ? "flex" : "none" }}
+      >
         <input
           type="text"
           value={input}
