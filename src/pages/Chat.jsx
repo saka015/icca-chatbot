@@ -14,10 +14,11 @@ import { FiPhoneCall } from "react-icons/fi";
 import { IoIosPaper } from "react-icons/io";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiMinus } from "react-icons/fi";
-
+import { IoCallOutline } from "react-icons/io5";
 import logo from "../assets/icca-logo.svg";
 import Logo from "../assets/Logo";
 import StartConversation from "../components/StartConversation";
+import { BsChatSquare } from "react-icons/bs";
 
 function Chat() {
   const navigate = useNavigate();
@@ -88,74 +89,86 @@ function Chat() {
     //   </main>
     // </div>
 
-    <div className="bg-[#c41230] bottom-25 left-10 absolute h-fit w-88 rounded-4xl overflow-hidden p-2">
-      <div className="flex flex-col items-center justify-center w-full pt-2">
-        <FiMinus className="cursor-pointer absolute top-10 right-10 text-white text-xl" />
-        <Logo />
-        <p className="text-[10px] -mt-1 text-white text-left max-w-[120px]">
-          INTERNATIONAL CENTER FOR CULINARY ARTS DUBAI
-        </p>
-      </div>
+    <div className="bg-[#c41230] bottom-25 left-10 absolute h-[500px] w-88 rounded-4xl overflow-hidden p- flex flex-col">
+      {/* Scrollable content area that includes everything */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-20 rounded-4xl scrollbar-hide">
+        {/* Red header section */}
+        <div className="flex flex-col items-center justify-center w-full pt-2 sticky top-0 z-10">
+          <FiMinus className="cursor-pointer absolute top-10 right-10 text-white text-xl" />
+          <Logo />
+          <p className="text-[10px] -mt-1 text-white text-left max-w-[120px]">
+            INTERNATIONAL CENTER FOR CULINARY ARTS DUBAI
+          </p>
+        </div>
 
-      <div className="p-2 bg-white rounded-4xl flex flex-col items-center justify-center mt-4 ">
-        <p className="text-black text-center text-base font-sf">
-          Chat with AIVA
-        </p>
-        <StartConversation />
+        {/* White content section with negative margin to create overlap */}
+        <div className="p-2 bg-white rounded-4xl overflow-hidden flex flex-col items-center justify-center mt-2 -mx-1 relative z-20">
+          <p className="text-black text-center text-base font-sf">
+            Chat with AIVA
+          </p>
 
-        <div className="flex flex-col gap-y-4 my-2 w-full">
-          <div className="flex w-full rounded-2xl shadow-xl p-3">
-            <div className="w-2/3">
-              <p className="text-black text-base">Take a virtual tour</p>
-              <p className="text-gray-500 text-xs">
-                Get a World-Class Experience
-              </p>
-            </div>
+          <StartConversation />
 
-            <div className="w-1/3 flex items-center justify-center">
-              <TbWorld className="text-3xl text-[#c41230]" />
-            </div>
-          </div>
-          <div className="flex w-full rounded-2xl shadow-xl p-3">
-            <div className="w-2/3">
-              <p className="text-black text-base">Speak with a couseller</p>
-              <p className="text-gray-500 text-xs">Request call back</p>
-            </div>
+          <div className="flex flex-col gap-y-4 my-2 pb-4 w-full">
+            <div className="flex w-full rounded-2xl shadow-xl p-3">
+              <div className="w-2/3">
+                <p className="text-black text-base">Take a virtual tour</p>
+                <p className="text-gray-500 text-xs">
+                  Get a World-Class Experience
+                </p>
+              </div>
 
-            <div className="w-1/3 flex items-center justify-center">
-              <FiPhoneCall className="text-3xl text-[#c41230]" />
+              <div className="w-1/3 flex items-center justify-center">
+                <TbWorld className="text-3xl text-[#c41230]" />
+              </div>
             </div>
-          </div>
-          <div className="flex w-full rounded-2xl shadow-xl p-3">
-            <div className="w-2/3">
-              <p className="text-black text-base">WhatsApp Us</p>
-              <p className="text-gray-500 text-xs">Connect on WhatsApp</p>
-            </div>
+            <div className="flex w-full rounded-2xl shadow-xl p-3">
+              <div className="w-2/3">
+                <p className="text-black text-base">Speak with a couseller</p>
+                <p className="text-gray-500 text-xs">Request call back</p>
+              </div>
 
-            <div className="w-1/3 flex items-center justify-center">
-              <FaWhatsapp className="text-3xl text-[#c41230]" />
+              <div className="w-1/3 flex items-center justify-center">
+                <FiPhoneCall className="text-3xl text-[#c41230]" />
+              </div>
             </div>
-          </div>
-          <div className="flex w-full rounded-2xl shadow-xl p-3">
-            <div className="w-2/3">
-              <p className="text-black text-base">Apply Now</p>
-              <p className="text-gray-500 text-xs">Online Application</p>
-            </div>
+            <div className="flex w-full rounded-2xl shadow-xl p-3">
+              <div className="w-2/3">
+                <p className="text-black text-base">WhatsApp Us</p>
+                <p className="text-gray-500 text-xs">Connect on WhatsApp</p>
+              </div>
 
-            <div className="w-1/3 flex items-center justify-center">
-              <IoIosPaper className="text-3xl text-[#c41230]" />
+              <div className="w-1/3 flex items-center justify-center">
+                <FaWhatsapp className="text-3xl text-[#c41230]" />
+              </div>
+            </div>
+            <div className="flex w-full rounded-2xl shadow-xl p-3">
+              <div className="w-2/3">
+                <p className="text-black text-base">Apply Now</p>
+                <p className="text-gray-500 text-xs">Online Application</p>
+              </div>
+
+              <div className="w-1/3 flex items-center justify-center">
+                <IoIosPaper className="text-3xl text-[#c41230]" />
+              </div>
             </div>
           </div>
         </div>
-
-        
-        <footer className="w-full bottom-0 left-0 right-0 bg-red-400 p-4">
-          <div className="flex w-full rounded-2xl shadow-xl">
-
-          </div>
-        </footer>
-        
       </div>
+
+      {/* Fixed footer */}
+      <footer className="w-full bottom-0 left-0 right-0 absolute bg-white shadow-md rounded-4xl border-t-0 rounded-t-none p-4 z-30 border-[4px] border-[#c41230]">
+        <div className="flex w-full justify-around rounded-2xl shadow-xl p-2">
+          <div className="text-[#c41230] flex flex-col items-center justify-center">
+            <IoCallOutline className="rotate-135 text-2xl font-semibold" />
+            <p className="text-base">Call</p>
+          </div>
+          <div className="text-[#c41230] flex flex-col items-center justify-center">
+            <BsChatSquare className="text-2xl font-semibold" />
+            <p className="text-base">Chat</p>
+          </div>
+        </div>
+      </footer>
 
       {/* <Chatbot /> */}
     </div>
