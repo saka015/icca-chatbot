@@ -99,7 +99,7 @@ function Chat() {
           <p className="app-subtitle">Your Culinary Career Assistant</p>
           <button onClick={downloadTranscript} className="transcript-btn">
             {" "}
-            Transcript <MdDownload />{" "}
+            Download Data <MdDownload />{" "}
           </button>
           <button onClick={sendTranscript} className="transcript-btn">
             {" "}
