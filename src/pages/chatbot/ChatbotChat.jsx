@@ -16,6 +16,7 @@ import botPic from "../../assets/bot-pic.png";
 import { FaChevronLeft } from "react-icons/fa";
 import { IoCloseOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { RiSendPlaneLine } from "react-icons/ri";
 
 const ChatbotChat = ({ setShowChat }) => {
   const { setCurrentPage } = useChatbot();
@@ -524,9 +525,9 @@ const ChatbotChat = ({ setShowChat }) => {
         </div>
 
         {/* Chat messages area - White background similar to ChatbotHome */}
-        <div className="bg-white rounded-4xl rounded-b-none mt-2 -mx-1 flex-1 overflow-y-auto pb-16 relative z-20">
+        <div className="bg-white min-h-88 rounded-4xl rounded-b-none mt-2 -mx-1 flex-1 overflow-y-auto pb-16 relative z-20">
           {messages.length === 0 ? (
-            <div className="text-center text-gray-500 mt-4 p-4 bg-gray-100 rounded-lg">
+            <div className="text-center text-gray-500 mt-4 p-4 bg-dgray-100 rounded-lg">
               Start a conversation with AIVA
             </div>
           ) : (
@@ -539,16 +540,24 @@ const ChatbotChat = ({ setShowChat }) => {
                     : "flex justify-start"
                 }`}
               >
-                <div className={`p-3 rounded-lg max-w-[80%d] `}>
+                <div
+                  className={`p-3 rounded-lg max-w-[80%d] ${
+                    msg.role === "user" ? "flex flex-col" : "flex gap-2"
+                  }  `}
+                >
                   <div
                     className={`${
                       msg.role === "user" ? "text-right" : "text-left"
                     } font-light text-gray-500 text-xs mb-1`}
                   >
-                    {msg.role === "user" ? "You" : "AIVA"}
+                    {msg.role === "user" ? (
+                      "You"
+                    ) : (
+                      <img width="500" src={botPic} alt="" />
+                    )}
                   </div>
                   <div
-                    className={` p-4 rounded-2xl shadow-xl whitespace-pre-wrap text-xs ${
+                    className={` p-4 rounded-2xl shadow-xl whitespace-pre-wrap font-light text-xs ${
                       msg.role === "user"
                         ? "bg-[#c41230] text-white"
                         : "bg-[#F8F8F8] text-gray-800"
@@ -581,8 +590,8 @@ const ChatbotChat = ({ setShowChat }) => {
         </div>
 
         {/* Chat input area - Fixed positioning at bottom */}
-        <div className="chat-inpudt-area px-4 py-3 bg-white shadow-md rounded-4xl border-t-0 rounded-t-none absolute bottom-0 left-0 right-0 z-30 border-[4px] border-[#c41230]">
-          <div className="flex w-full">
+        <div className="px-4 py-3 bg-white shadow-md rounded-4xl border-t-0 rounded-t-none absolute bottom-0 left-0 right-0 z-30 border-[4px] border-[#c41230]">
+          <div className="flex w-full border rounded-xl border-[#c41230]">
             <input
               type="text"
               value={input}
@@ -593,16 +602,17 @@ const ChatbotChat = ({ setShowChat }) => {
                   sendMessage();
                 }
               }}
-              placeholder="Type your message..."
-              className="flex-1 p-2 border rounded-l-lg focus:outline-none"
+              placeholder="Write a message..."
+              className="flex-1 p-2 placeholder:text-[#c41230]/50 rounded-l-lg outline-red-400 border-[#c41230]"
               disabled={loading}
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="bg-[#c41230] text-white p-2 rounded-r-lg font-medium"
+              className="bg-[#c412d30] text-white p-2 rounded-r-lg font-medium"
             >
-              {loading ? "..." : "Send"}
+              {/* {loading ? "..." : "Send"} */}
+              <RiSendPlaneLine className="text-xl rotate-45 text-[#c41230]" />
             </button>
           </div>
         </div>
