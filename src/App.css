@@ -579,7 +579,7 @@ div#wave {
   width: 90%;
   color: white;
   text-align: center;
-  font-size: 1rem;
+  font-size: .8rem;
   font-weight: 500;
   line-height: 1.5;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -924,12 +924,35 @@ div#wave {
 }
 
 .typing-indicator {
-  background-color: #f0f0f0;
-  padding: 8px 16px;
-  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.dot {
   display: inline-block;
-  margin-left: 10px;
-  width: fit-content;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #c41230;
+  margin: 0 2px;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
 }
 
 /* Add styling for first message typing indicator */
@@ -965,7 +988,6 @@ div#wave {
     transform: translateY(-4px);
   }
 }
-
 
 /*  */
 
@@ -1111,5 +1133,166 @@ form label{
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* Chat page header styles */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #c41230;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-title {
+  font-weight: 500;
+  font-size: 18px;
+  margin: 0;
+}
+
+.minimize-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.minimize-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  margin-bottom: 15px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-cancel {
+  background-color: #f1f1f1;
+  color: #333;
+  border: none;
+}
+
+.modal-cancel:hover {
+  background-color: #e1e1e1;
+}
+
+.modal-confirm {
+  background-color: #c41230;
+  color: white;
+  border: none;
+}
+
+.modal-confirm:hover {
+  background-color: #a30f28;
+}
+
+/* Options menu styles - updated for better visibility */
+.options-menu {
+  position: fixed; /* Changed from absolute to fixed */
+  background-color: white; /* Changed back to white from red */
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Increased shadow */
+  z-index: 9999; /* Very high z-index */
+  overflow: hidden;
+  min-width: 180px;
+  animation: fadeIn 0.2s ease-out; /* Add animation */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ensure the menu items are visible */
+.options-menu button {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #333;
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: white; /* Ensure background is white */
+}
+
+.options-menu button:hover {
+  background-color: #f5f5f5;
 }
 

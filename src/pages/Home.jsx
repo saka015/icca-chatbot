@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import BotTrigger from "../components/BotTrigger";
-// import Chatbot from '../components/Chatbot'
-import Chat from "./Chat";
+import Chatbot from "../components/Chatbot";
 
 const Home = () => {
   const [showChat, setShowChat] = useState(false);
@@ -16,7 +15,7 @@ const Home = () => {
             : "opacity-0 translate-y-full pointer-events-none"
         }`}
       >
-        <Chat setShowChat={setShowChat} />
+        <Chatbot setShowChat={setShowChat} />
       </div>
     </div>
   );

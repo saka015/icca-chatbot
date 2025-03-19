@@ -1,27 +1,28 @@
 import React from "react";
-import "../App.css";
+import "../../App.css";
 import IccaLogo from "/logo.avif";
 import { Toaster } from "react-hot-toast";
-import Chatbot from "../components/Chatbot";
+import Chatbot from "../../components/Chatbot";
 import { MdDownload } from "react-icons/md";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { IoIosLogOut } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import BotTrigger from "../components/BotTrigger";
+import BotTrigger from "../../components/BotTrigger";
 import { TbWorld } from "react-icons/tb";
 import { FiPhoneCall } from "react-icons/fi";
 import { IoIosPaper } from "react-icons/io";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiMinus } from "react-icons/fi";
 import { IoCallOutline } from "react-icons/io5";
-import logo from "../assets/icca-logo.svg";
-import Logo from "../assets/Logo";
-import StartConversation from "../components/StartConversation";
+import logo from "../../assets/icca-logo.svg";
+import Logo from "../../assets/Logo";
+import StartConversation from "../../components/StartConversation";
 import { BsChatSquare } from "react-icons/bs";
+import { useChatbot } from "../../context/ChatbotContext";
 
-function Chat({ setShowChat }) {
-  const navigate = useNavigate();
+function ChatbotHome({ setShowChat }) {
+  const { setCurrentPage } = useChatbot();
 
   const handleLogout = () => {
     try {
@@ -111,7 +112,7 @@ function Chat({ setShowChat }) {
             </div>
             <div className="flex w-full rounded-2xl shadow-xl p-3">
               <div className="w-2/3">
-                <p className="text-black text-base">Speak with a couseller</p>
+                <p className="text-black text-base">Speak with a counsellor</p>
                 <p className="text-gray-500 text-xs">Request call back</p>
               </div>
 
@@ -149,7 +150,10 @@ function Chat({ setShowChat }) {
             <IoCallOutline className="rotate-135 text-2xl font-semibold" />
             <p className="text-base">Call</p>
           </div>
-          <div className="text-[#c41230] flex flex-col items-center justify-center">
+          <div
+            className="text-[#c41230] flex flex-col items-center justify-center cursor-pointer"
+            onClick={() => setCurrentPage("chat")}
+          >
             <BsChatSquare className="text-2xl font-semibold" />
             <p className="text-base">Chat</p>
           </div>
@@ -159,4 +163,4 @@ function Chat({ setShowChat }) {
   );
 }
 
-export default Chat;
+export default ChatbotHome;

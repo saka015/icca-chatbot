@@ -1,7 +1,15 @@
 import React from "react";
 import botPic from "../assets/bot-pic.png";
 import { RiSendPlaneLine } from "react-icons/ri";
+import { useChatbot } from "../context/ChatbotContext";
+
 const StartConversation = () => {
+  const { setCurrentPage } = useChatbot();
+
+  const handleStartChat = () => {
+    setCurrentPage("chat");
+  };
+
   return (
     <div className="w-full rounded-2xl shadow-xl p-3">
       <p className="text-xs text-black">Conversations</p>
@@ -17,8 +25,10 @@ const StartConversation = () => {
           </p>
         </div>
       </div>
-      <button className="bg-[#c41230] flex justify-between px-12 items-center gap-2 w-full rounded-2xl font-normal text-base  text-white py-2 cursor-pointer border hover:border-[#c41230] hover:bg-white hover:text-[#c41230]">
-        {" "}
+      <button
+        onClick={handleStartChat}
+        className="bg-[#c41230] flex justify-between px-12 items-center gap-2 w-full rounded-2xl font-normal text-base text-white py-2 cursor-pointer border hover:border-[#c41230] hover:bg-white hover:text-[#c41230]"
+      >
         Send Us a Message <RiSendPlaneLine className="rotate-45" />
       </button>
     </div>
