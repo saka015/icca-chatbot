@@ -523,33 +523,37 @@ const ChatbotChat = ({ setShowChat }) => {
           </div>
         </div>
 
-        {/* Chat messages area - Fixed positioning issues */}
-        <div className="chat-messages flex-1 overflow-y-auto p-4 mb-8">
+        {/* Chat messages area - White background similar to ChatbotHome */}
+        <div className="bg-white rounded-4xl rounded-b-none mt-2 -mx-1 flex-1 overflow-y-auto pb-16 relative z-20">
           {messages.length === 0 ? (
-            <div className="text-center text-white mt-4 p-4 bg-white/10 rounded-lg">
+            <div className="text-center text-gray-500 mt-4 p-4 bg-gray-100 rounded-lg">
               Start a conversation with AIVA
             </div>
           ) : (
             messages.map((msg, index) => (
               <div
                 key={index}
-                className={`message mb-4 ${
+                className={`message ${
                   msg.role === "user"
                     ? "flex justify-end"
                     : "flex justify-start"
                 }`}
               >
-                <div
-                  className={`p-3 rounded-lg max-w-[80%] ${
-                    msg.role === "user"
-                      ? "bg-white/20 text-white"
-                      : "bg-white text-gray-800"
-                  }`}
-                >
-                  <div className="font-bold text-xs mb-1">
-                    {msg.role === "user" ? "You:" : "AIVA:"}
+                <div className={`p-3 rounded-lg max-w-[80%d] `}>
+                  <div
+                    className={`${
+                      msg.role === "user" ? "text-right" : "text-left"
+                    } font-light text-gray-500 text-xs mb-1`}
+                  >
+                    {msg.role === "user" ? "You" : "AIVA"}
                   </div>
-                  <div className="whitespace-pre-wrap text-xs">
+                  <div
+                    className={` p-4 rounded-2xl shadow-xl whitespace-pre-wrap text-xs ${
+                      msg.role === "user"
+                        ? "bg-[#c41230] text-white"
+                        : "bg-[#F8F8F8] text-gray-800"
+                    }`}
+                  >
                     {msg.content}
                   </div>
                 </div>
@@ -558,11 +562,17 @@ const ChatbotChat = ({ setShowChat }) => {
           )}
           {botTyping && !responseStarted && (
             <div className="flex justify-start mb-4">
-              <div className="bg-white p-3 rounded-lg">
-                <div className="typing-indicator">
-                  <span className="dot"></span>
-                  <span className="dot"></span>
-                  <span className="dot"></span>
+              <div className="bg-grady-100 p-3 rounded-lg">
+                <div className="typing-indicator flex">
+                  <span className="dot bg-gray-500 h-2 w-2 rounded-full mx-0.5 animate-bounce"></span>
+                  <span
+                    className="dot bg-gray-500 h-2 w-2 rounded-full mx-0.5 animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></span>
+                  <span
+                    className="dot bg-gray-500 h-2 w-2 rounded-full mx-0.5 animate-bounce"
+                    style={{ animationDelay: "0.4s" }}
+                  ></span>
                 </div>
               </div>
             </div>
@@ -571,7 +581,7 @@ const ChatbotChat = ({ setShowChat }) => {
         </div>
 
         {/* Chat input area - Fixed positioning at bottom */}
-        <div className="chat-input-area px-4 py-2 bg-[#c41230] sticky bottom-0 left-0 right-0">
+        <div className="chat-inpudt-area px-4 py-3 bg-white shadow-md rounded-4xl border-t-0 rounded-t-none absolute bottom-0 left-0 right-0 z-30 border-[4px] border-[#c41230]">
           <div className="flex w-full">
             <input
               type="text"
@@ -590,7 +600,7 @@ const ChatbotChat = ({ setShowChat }) => {
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="bg-white text-[#c41230] p-2 rounded-r-lg font-medium"
+              className="bg-[#c41230] text-white p-2 rounded-r-lg font-medium"
             >
               {loading ? "..." : "Send"}
             </button>
