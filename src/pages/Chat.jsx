@@ -94,6 +94,8 @@ function Chat() {
     }
   };
 
+  
+
   return (
     <div className="App">
       <main className="main-content">
@@ -106,19 +108,19 @@ function Chat() {
           <h1 className="app-title">ICCA Culinary Guide</h1>
           <p className="app-subtitle">Your Culinary Career Assistant</p>
           <button
-            onClick={downloadTranscript}
             className="transcript-btn"
-            disabled={isDownloading}
+            onClick={() => navigate("/transcript")}
           >
-            {isDownloading ? "Downloading Data..." : "Download Data"}{" "}
-            {!isDownloading && <MdDownload />}
+            Transcript
           </button>
           <button
             onClick={sendTranscript}
             className="transcript-btn"
             disabled={isSending}
           >
-            {isSending ? "Sending Transcript to Email..." : "Send Transcript to Email"}{" "}
+            {isSending
+              ? "Sending Transcript to Email..."
+              : "Send Transcript to Email"}{" "}
             {!isSending && <LuSend />}
           </button>
         </div>
