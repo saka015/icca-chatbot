@@ -437,8 +437,8 @@ const ChatbotChat = ({ setShowChat }) => {
   };
 
   return (
-    <div className="bg-[#c41230] bottom-25 left-10 h-[500px] w-88 rounded-4xl overflow-hidden pb-1  flex flex-col">
-      <div className="flex-1 overflow-y-hidden overflow-x-hidden px-2 pb-14 rounded-4xl scrollbar-hide">
+    <div className="bg-[#c41230] bottom-25 left-10 h-[500px] w-88 rounded-4xl overflow-hidden pb-1 flex flex-col">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-14 rounded-4xl scrollbar-hide">
         {/* Custom header for chat page */}
         <div className="flex items-center justify-between w-full pt-2 sticky top-0 z-10 px-2">
           <button
@@ -481,11 +481,7 @@ const ChatbotChat = ({ setShowChat }) => {
               {showOptionsMenu && (
                 <div
                   ref={optionsMenuRef}
-                  className="fixed bg-white rounded-md shadow-lg py-1 z-[9999]"
-                  style={{
-                    top: "10px",
-                    right: "-75px",
-                  }}
+                  className="absolute bg-white rounded-md shadow-lg py-1 z-[9999] right-0 top-8"
                 >
                   <button
                     onClick={downloadTranscript}
@@ -527,115 +523,82 @@ const ChatbotChat = ({ setShowChat }) => {
           </div>
         </div>
 
-        <div className="bg-red-400">
-          {/* {showLoader ? ( */}
-          {/* <div className="loader-container">
-              <div className="loader">
-                <div className="loader-content">
-                  {loaderData.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`loader-item ${
-                        index === currentLoaderIndex ? "active" : ""
-                      }`}
-                    >
-                      <div className="loader-image-container">
-                      <img src={item.image} alt={`Loader image ${index + 1}`} />
-                        <p className="loader-text">{item.text}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="loading-status">
-                  <div className="progress-bar">
-                    <div className="progress"></div>
-                  </div>
-                  <p className="status-text">
-                    {isServiceLive ? "Connected!" : "Connecting to server..."}
-                  </p>
-                </div>
-              </div>
-              <div className="success-check">
-                <div className="check-circle">
-                  <div className="checkmark">✓</div>
-                </div>
-                <div className="success-text">Start your chat!</div>
-              </div>
-          </div> */}
-          {/* ) : ( */}
-          {/* <> */}
-          <div className="chat-messages flex-1 overflow-y-auto p-4 mb-8 bg-green-400 rounded-lg z-100 absolute">
-            {messages.length === 0 ? (
-              <div className="text-center text-gray-500 mt-4 p-4 bg-yellow-100 rounded-lg">
-                Start a conversation with AIVA
-              </div>
-            ) : (
-              messages.map((msg, index) => (
+        {/* Chat messages area - Fixed positioning issues */}
+        <div className="chat-messages flex-1 overflow-y-auto p-4 mb-8">
+          {messages.length === 0 ? (
+            <div className="text-center text-white mt-4 p-4 bg-white/10 rounded-lg">
+              Start a conversation with AIVA
+            </div>
+          ) : (
+            messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`message mb-4 ${
+                  msg.role === "user"
+                    ? "flex justify-end"
+                    : "flex justify-start"
+                }`}
+              >
                 <div
-                  key={index}
-                  className={`messdage p-3 myd-2 rounded-lg  ${
+                  className={`p-3 rounded-lg max-w-[80%] ${
                     msg.role === "user"
-                      ? "bg-[#c41230d]d ml-auto maxd-w-[80%] text-white"
-                      : "bg-pink-100d mr-auto max-wd-[80%] text-pink-900"
+                      ? "bg-white/20 text-white"
+                      : "bg-white text-gray-800"
                   }`}
                 >
-                  <div className="bg-transparent font-bold text-xs mb-1">
+                  <div className="font-bold text-xs mb-1">
                     {msg.role === "user" ? "You:" : "AIVA:"}
                   </div>
-                  <div
-                    className={`message w-full whitespace-pre-wrap text-xs shadow-sm ${
-                      msg.role === "user"
-                        ? "bg-[#c41230] ml-auto text-white"
-                        : "bg-pink-100 mr-auto  text-pink-900"
-                    }`}
-                  >
+                  <div className="whitespace-pre-wrap text-xs">
                     {msg.content}
                   </div>
                 </div>
-              ))
-            )}
-            {botTyping && !responseStarted && (
-              <div className="typing-indicator bg-pink-100 p-2 rounded-lg inline-block">
-                <span className="dot"></span>
-                <span className="dot"></span>
-                <span className="dot"></span>
               </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Chat input area */}
-          <div className="chat-input-area my-4 mb-8 p-2">
-            <div className="flex w-full">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !isProcessingRef.current) {
-                    e.preventDefault();
-                    sendMessage();
-                  }
-                }}
-                placeholder="Type your message..."
-                className="flex-1 p-2 border rounded-l-lg focus:outline-none"
-                disabled={loading}
-              />
-              <button
-                onClick={sendMessage}
-                disabled={loading || !input.trim()}
-                className="bg-[#c41230] text-white p-2 rounded-r-lg"
-              >
-                {loading ? "..." : "Send"}
-              </button>
+            ))
+          )}
+          {botTyping && !responseStarted && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-white p-3 rounded-lg">
+                <div className="typing-indicator">
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                </div>
+              </div>
             </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* Chat input area - Fixed positioning at bottom */}
+        <div className="chat-input-area px-4 py-2 bg-[#c41230] sticky bottom-0 left-0 right-0">
+          <div className="flex w-full">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !isProcessingRef.current) {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
+              placeholder="Type your message..."
+              className="flex-1 p-2 border rounded-l-lg focus:outline-none"
+              disabled={loading}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={loading || !input.trim()}
+              className="bg-white text-[#c41230] p-2 rounded-r-lg font-medium"
+            >
+              {loading ? "..." : "Send"}
+            </button>
           </div>
-          {/* </> */}
-          {/* )} */}
         </div>
       </div>
 
-      {/* Add back the close chat confirmation modal */}
+      {/* Close chat confirmation modal */}
       {showCloseModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[9999] rounded-4xl h-full w-full">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-auto w-56 ">
