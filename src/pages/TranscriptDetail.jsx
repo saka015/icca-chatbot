@@ -66,9 +66,15 @@ const TranscriptDetail = () => {
       } else if (part === "Assistant:") {
         currentRole = "bot";
       } else if (part.trim() && currentRole) {
+        // Split content by newlines to handle line breaks
+        const contentLines = part
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim());
+
         messages.push({
           role: currentRole,
-          content: part.trim(),
+          content: contentLines,
         });
       }
     }
@@ -103,7 +109,20 @@ const TranscriptDetail = () => {
         <div className="conversation-messages">
           {messages.map((message, index) => (
             <div key={index} className={`conversation-message ${message.role}`}>
-              {message.content}
+              <div className="message-role">
+                {message.role === "user" ? "User" : "Assistant"}:
+              </div>
+              <div className="message-content">
+                {Array.isArray(message.content) ? (
+                  message.content.map((line, lineIndex) => (
+                    <p key={lineIndex} className="message-line">
+                      {line}
+                    </p>
+                  ))
+                ) : (
+                  <p className="message-line">{message.content}</p>
+                )}
+              </div>
             </div>
           ))}
         </div>

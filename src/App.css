@@ -1317,3 +1317,29 @@ form label{
   padding: 2rem;
   color: #666;
 }
+
+.message-role {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message-line {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.conversation-message.user .message-role {
+  color: #2c3e50;
+}
+
+.conversation-message.bot .message-role {
+  color: #c41230;
+}
