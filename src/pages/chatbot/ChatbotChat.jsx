@@ -527,9 +527,9 @@ const ChatbotChat = ({ setShowChat }) => {
           </div>
         </div>
 
-        <div className="p-2 mb-2 bg-white rounded-xl overflow-hidden flex flex-col mt-2 -mx-1 relative z-20 h-full">
-          {showLoader ? (
-            <div className="loader-container">
+        <div className="bg-red-400">
+          {/* {showLoader ? ( */}
+          {/* <div className="loader-container">
               <div className="loader">
                 <div className="loader-content">
                   {loaderData.map((item, index) => (
@@ -540,10 +540,7 @@ const ChatbotChat = ({ setShowChat }) => {
                       }`}
                     >
                       <div className="loader-image-container">
-                        <img
-                          src={item.image}
-                          alt={`Loader image ${index + 1}`}
-                        />
+                      <img src={item.image} alt={`Loader image ${index + 1}`} />
                         <p className="loader-text">{item.text}</p>
                       </div>
                     </div>
@@ -564,69 +561,77 @@ const ChatbotChat = ({ setShowChat }) => {
                 </div>
                 <div className="success-text">Start your chat!</div>
               </div>
-            </div>
-          ) : (
-            <>
-              <div className="chat-messages flex-1 overflow-y-auto p-4 mb-8 bg-gray-100 rounded-lg">
-                {messages.length === 0 ? (
-                  <div className="text-center text-gray-500 mt-4 p-4 bg-yellow-100 rounded-lg">
-                    Start a conversation with AIVA
-                  </div>
-                ) : (
-                  messages.map((msg, index) => (
-                    <div
-                      key={index}
-                      className={`message p-3 my-2 rounded-lg shadow-sm ${
-                        msg.role === "user"
-                          ? "bg-blue-100 ml-auto max-w-[80%] text-blue-900"
-                          : "bg-pink-100 mr-auto max-w-[80%] text-pink-900"
-                      }`}
-                    >
-                      <div className="font-bold text-xs mb-1">
-                        {msg.role === "user" ? "You:" : "AIVA:"}
-                      </div>
-                      <div className="whitespace-pre-wrap">{msg.content}</div>
-                    </div>
-                  ))
-                )}
-                {botTyping && !responseStarted && (
-                  <div className="typing-indicator bg-pink-100 p-2 rounded-lg inline-block">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
+          </div> */}
+          {/* ) : ( */}
+          {/* <> */}
+          <div className="chat-messages flex-1 overflow-y-auto p-4 mb-8 bg-green-400 rounded-lg z-100 absolute">
+            {messages.length === 0 ? (
+              <div className="text-center text-gray-500 mt-4 p-4 bg-yellow-100 rounded-lg">
+                Start a conversation with AIVA
               </div>
-
-              {/* Chat input area */}
-              <div className="chat-input-area my-4 mb-8 p-2">
-                <div className="flex w-full">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !isProcessingRef.current) {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
-                    placeholder="Type your message..."
-                    className="flex-1 p-2 border rounded-l-lg focus:outline-none"
-                    disabled={loading}
-                  />
-                  <button
-                    onClick={sendMessage}
-                    disabled={loading || !input.trim()}
-                    className="bg-[#c41230] text-white p-2 rounded-r-lg"
+            ) : (
+              messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`messdage p-3 myd-2 rounded-lg  ${
+                    msg.role === "user"
+                      ? "bg-[#c41230d]d ml-auto maxd-w-[80%] text-white"
+                      : "bg-pink-100d mr-auto max-wd-[80%] text-pink-900"
+                  }`}
+                >
+                  <div className="bg-transparent font-bold text-xs mb-1">
+                    {msg.role === "user" ? "You:" : "AIVA:"}
+                  </div>
+                  <div
+                    className={`message w-full whitespace-pre-wrap text-xs shadow-sm ${
+                      msg.role === "user"
+                        ? "bg-[#c41230] ml-auto text-white"
+                        : "bg-pink-100 mr-auto  text-pink-900"
+                    }`}
                   >
-                    {loading ? "..." : "Send"}
-                  </button>
+                    {msg.content}
+                  </div>
                 </div>
+              ))
+            )}
+            {botTyping && !responseStarted && (
+              <div className="typing-indicator bg-pink-100 p-2 rounded-lg inline-block">
+                <span className="dot"></span>
+                <span className="dot"></span>
+                <span className="dot"></span>
               </div>
-            </>
-          )}
+            )}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Chat input area */}
+          <div className="chat-input-area my-4 mb-8 p-2">
+            <div className="flex w-full">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !isProcessingRef.current) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder="Type your message..."
+                className="flex-1 p-2 border rounded-l-lg focus:outline-none"
+                disabled={loading}
+              />
+              <button
+                onClick={sendMessage}
+                disabled={loading || !input.trim()}
+                className="bg-[#c41230] text-white p-2 rounded-r-lg"
+              >
+                {loading ? "..." : "Send"}
+              </button>
+            </div>
+          </div>
+          {/* </> */}
+          {/* )} */}
         </div>
       </div>
 
