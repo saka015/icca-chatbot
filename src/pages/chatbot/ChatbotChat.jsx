@@ -39,6 +39,8 @@ const ChatbotChat = ({ setShowChat }) => {
   const token = localStorage.getItem("userToken");
   const [typingDots, setTypingDots] = useState("");
   const [responseStarted, setResponseStarted] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const messageBoxRef = useRef(null);
 
   const loaderData = [
     {
@@ -221,6 +223,18 @@ const ChatbotChat = ({ setShowChat }) => {
       setTypingDots("");
     }
   }, [botTyping]);
+
+  useEffect(() => {
+    const messageBox = messageBoxRef.current;
+    if (!messageBox) return;
+
+    const handleScroll = () => {
+      setScrollPosition(messageBox.scrollTop);
+    };
+
+    messageBox.addEventListener("scroll", handleScroll);
+    return () => messageBox.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const sendMessage = async () => {
     if (!input.trim() || isProcessingRef.current) return;
@@ -437,11 +451,20 @@ const ChatbotChat = ({ setShowChat }) => {
     setShowOptionsMenu(false);
   };
 
+  const yScroll = useRef(null);
+
   return (
     <div className="bg-[#c41230] bottom-25 left-10 h-[500px] w-88 rounded-4xl overflow-hidden pb-1 flex flex-col">
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-14 rounded-4xl scrollbar-hide">
+      <div
+        className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-14 rounded-4xl scrollbar-hide"
+        ref={messageBoxRef}
+      >
         {/* Custom header for chat page */}
-        <div className="flex items-center justify-between w-full pt-2 sticky top-0 z-10 px-2">
+        <div
+          className={`flex items-center justify-between w-full pt-2 sticky top-0 z-50 px-2 ${
+            scrollPosition > 50 ? "opacity-0" : "opacity-100"
+          }`}
+        >
           <button
             onClick={() => setCurrentPage("home")}
             className="flex items-center text-white hover:bg-white/10 p-2 rounded-full"
@@ -449,7 +472,7 @@ const ChatbotChat = ({ setShowChat }) => {
             <FaChevronLeft className="text-xl" />
           </button>
 
-          <div className="flex items-center justify-start gap-2 my-2">
+          <div className="flex items-center justify-start gap-2 my-2 transition-opacity duration-200 ">
             <div className="">
               <img
                 className="border-2 border-white rounded-full"
@@ -482,18 +505,18 @@ const ChatbotChat = ({ setShowChat }) => {
               {showOptionsMenu && (
                 <div
                   ref={optionsMenuRef}
-                  className="absolute bg-white rounded-md shadow-lg py-1 z-[9999] right-0 top-8"
+                  className="absolute bg-white rounded-md shadow-lg py-1  w-40 top-10 -right-3 z-10"
                 >
                   <button
                     onClick={downloadTranscript}
-                    className="block cursor-pointer w-full text-left px-2 py-1 text-xs text-gray-700 hover:bg-gray-100"
+                    className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100"
                   >
                     Download Data
                   </button>
                   <button
                     onClick={sendTranscript}
                     disabled={isSending}
-                    className="block cursor-pointer w-full text-left px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 items-center"
+                    className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
                   >
                     {isSending ? (
                       <>
@@ -525,7 +548,7 @@ const ChatbotChat = ({ setShowChat }) => {
         </div>
 
         {/* Chat messages area - White background similar to ChatbotHome */}
-        <div className="bg-white min-h-88 rounded-4xl rounded-b-none mt-2 -mx-1 flex-1 overflow-y-auto pb-16 relative z-20">
+        <div className="bg-white min-h-88 rounded-4xl rounded-b-none mt-2 -mx-1 flex-1 overflow-y-auto pb-16 relative z-0">
           {messages.length === 0 ? (
             <div className="text-center text-gray-500 mt-4 p-4 bg-dgray-100 rounded-lg">
               Start a conversation with AIVA
@@ -553,7 +576,14 @@ const ChatbotChat = ({ setShowChat }) => {
                     {msg.role === "user" ? (
                       "You"
                     ) : (
-                      <img width="500" src={botPic} alt="" />
+                      <div className="h-12 w-12 overflow-hidden shadow-xl rounded-full">
+                        <img
+                          width="500"
+                          src={botPic}
+                          alt=""
+                          className="border border-white rounded-full"
+                        />
+                      </div>
                     )}
                   </div>
                   <div
@@ -590,7 +620,7 @@ const ChatbotChat = ({ setShowChat }) => {
         </div>
 
         {/* Chat input area - Fixed positioning at bottom */}
-        <div className="px-4 py-3 bg-white shadow-md rounded-4xl border-t-0 rounded-t-none absolute bottom-0 left-0 right-0 z-30 border-[4px] border-[#c41230]">
+        <div className="px-4 py-3 bg-white shadow-md rounded-4xl border-t-0 rounded-t-none absolute bottom-0 left-0 right-0 z-40 border-[4px] border-[#c41230]">
           <div className="flex w-full border rounded-xl border-[#c41230]">
             <input
               type="text"
@@ -603,7 +633,7 @@ const ChatbotChat = ({ setShowChat }) => {
                 }
               }}
               placeholder="Write a message..."
-              className="flex-1 p-2 placeholder:text-[#c41230]/50 rounded-l-lg outline-red-400 border-[#c41230]"
+              className="flex-1 p-2 placeholder:text-[#c41230]/50  focus:outline-none rounded-l-lg outline-red-400 border-[#c41230]"
               disabled={loading}
             />
             <button
