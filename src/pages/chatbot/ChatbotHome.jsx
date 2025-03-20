@@ -90,7 +90,7 @@ function ChatbotHome({ setShowChat }) {
           </p>
         </div>
 
-        <div className="p-2 bg-white rounded-4xl overflow-hidden flex flex-col items-center justify-center mt-2 -mx-1 relative z-20">
+        <div className="p-2 bg-white rounded-4xl rounded-b-none overflow-hidden flex flex-col items-center justify-center mt-2 -mx-1 relative z-20">
           <p className="text-black text-center text-base font-sf">
             Chat with AIVA
           </p>
