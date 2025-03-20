@@ -17,6 +17,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import { IoCloseOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiSendPlaneLine } from "react-icons/ri";
+import { MdMailOutline } from "react-icons/md";
 
 const ChatbotChat = ({ setShowChat }) => {
   const { setCurrentPage } = useChatbot();
@@ -462,7 +463,7 @@ const ChatbotChat = ({ setShowChat }) => {
         {/* Custom header for chat page */}
         <div
           className={`flex items-center justify-between w-full pt-2 sticky top-0 z-50 px-2 ${
-            scrollPosition > 50 ? "opacity-0" : "opacity-100"
+            scrollPosition > 20 ? "opacity-0" : "opacity-100"
           }`}
         >
           <button
@@ -505,13 +506,30 @@ const ChatbotChat = ({ setShowChat }) => {
               {showOptionsMenu && (
                 <div
                   ref={optionsMenuRef}
-                  className="absolute bg-white rounded-md shadow-lg py-1  w-40 top-10 -right-3 z-10"
+                  className="absolute bg-white border-2 border-[#c41230] rounded-md shadow-lg py-1  w-40 top-10 -right-3 z-10"
                 >
-                  <button
+                  {/* <button
                     onClick={downloadTranscript}
                     className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100"
                   >
                     Download Data
+                  </button> */}
+                  <button
+                    onClick={sendTranscript}
+                    disabled={isSending}
+                    className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
+                  >
+                    {isSending ? (
+                      <>
+                        <span className="mr-1">Sending...</span>
+                        <div className="animate-spin h-3 w-3 border-2 border-gray-500 border-t-transparent rounded-full ml-auto"></div>
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <MdMailOutline />
+                        Send Transcript
+                      </div>
+                    )}
                   </button>
                   <button
                     onClick={sendTranscript}
@@ -524,9 +542,10 @@ const ChatbotChat = ({ setShowChat }) => {
                         <div className="animate-spin h-3 w-3 border-2 border-gray-500 border-t-transparent rounded-full ml-auto"></div>
                       </>
                     ) : (
-                      "Send Transcript to Email"
+                      "Sound"
                     )}
                   </button>
+                  
                 </div>
               )}
             </div>
