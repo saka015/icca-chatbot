@@ -454,7 +454,7 @@ const ChatbotChat = ({ setShowChat }) => {
   const yScroll = useRef(null);
 
   return (
-    <div className="bg-[#c41230] bottom-25 left-10 h-[500px] w-88 rounded-4xl overflow-hidden pb-1 flex flex-col">
+    <div className="bg-[#c41230] bottom-20 left-10 h-[500px] w-88 rounded-4xl overflow-hidden pb-1 flex flex-col">
       <div
         className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-14 rounded-4xl scrollbar-hide"
         ref={messageBoxRef}
