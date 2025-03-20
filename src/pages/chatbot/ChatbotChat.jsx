@@ -18,6 +18,8 @@ import { IoCloseOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { MdMailOutline } from "react-icons/md";
+import { HiOutlineSpeakerWave } from "react-icons/hi2";
+import { LuBrain } from "react-icons/lu";
 
 const ChatbotChat = ({ setShowChat }) => {
   const { setCurrentPage } = useChatbot();
@@ -506,7 +508,7 @@ const ChatbotChat = ({ setShowChat }) => {
               {showOptionsMenu && (
                 <div
                   ref={optionsMenuRef}
-                  className="absolute bg-white border-2 border-[#c41230] rounded-md shadow-lg py-1  w-40 top-10 -right-3 z-10"
+                  className="absolute bg-white border-2 border-[#c41230] rounded-2xl shadow-lg py-1  w-40 top-10 -right-3 z-10"
                 >
                   {/* <button
                     onClick={downloadTranscript}
@@ -517,7 +519,7 @@ const ChatbotChat = ({ setShowChat }) => {
                   <button
                     onClick={sendTranscript}
                     disabled={isSending}
-                    className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
+                    className="block cursor-pointer rounded-2xl w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
                   >
                     {isSending ? (
                       <>
@@ -526,33 +528,34 @@ const ChatbotChat = ({ setShowChat }) => {
                       </>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <MdMailOutline />
-                        Send Transcript
+                        <MdMailOutline className="text-lg text-[#c41230]" />
+                        E-Mail Transcript
                       </div>
                     )}
+                  </button>
+                  <button className="block cursor-pointer rounded-2xl w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center">
+                    <div className="flex items-center gap-2">
+                      <LuBrain className="text-lg text-[#c41230]" />
+                      Call AI
+                    </div>
                   </button>
                   <button
                     onClick={sendTranscript}
                     disabled={isSending}
-                    className="block cursor-pointer w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
+                    className="block cursor-pointer rounded-2xl w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
                   >
-                    {isSending ? (
-                      <>
-                        <span className="mr-1">Sending...</span>
-                        <div className="animate-spin h-3 w-3 border-2 border-gray-500 border-t-transparent rounded-full ml-auto"></div>
-                      </>
-                    ) : (
-                      "Sound"
-                    )}
+                    <div className="flex items-center gap-2">
+                      <HiOutlineSpeakerWave className="text-lg text-[#c41230]" />
+                      Sound
+                    </div>
                   </button>
-                  
                 </div>
               )}
             </div>
 
             <button
               onClick={handleCloseChat}
-              className="cursor-pointer text-white text-xl hover:bg-white/10 p-1 rounded-full flex items-center justify-center"
+              className="cursor-pointer text-white  text-xl hover:bg-white/10 p-1 rounded-full flex items-center justify-center"
             >
               <IoCloseOutline />
             </button>
