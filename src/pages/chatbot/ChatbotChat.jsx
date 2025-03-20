@@ -539,11 +539,7 @@ const ChatbotChat = ({ setShowChat }) => {
                       Call AI
                     </div>
                   </button>
-                  <button
-                    onClick={sendTranscript}
-                    disabled={isSending}
-                    className="block cursor-pointer rounded-2xl w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center"
-                  >
+                  <button className="block cursor-pointer rounded-2xl w-full text-left px-2 py-1 text-[11px] text-gray-700 hover:bg-gray-100 items-center">
                     <div className="flex items-center gap-2">
                       <HiOutlineSpeakerWave className="text-lg text-[#c41230]" />
                       Sound
